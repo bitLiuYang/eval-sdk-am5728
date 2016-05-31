@@ -1,0 +1,9 @@
+config PROPRIETARY_TI_IPC
+	bool "TI IPC 3.0.0"
+	help 
+	TI-IPC package. 
+	Inter-Processor Communication (IPC) provides a processor-agnostic API which 
+	can be used for communication between processors in a multi-processor 
+	environment (inter-core), communication to other threads on same processor 
+	(inter-process), and communication to peripherals (inter-device). 
+	The API supports message passing, streams, and linked lists.

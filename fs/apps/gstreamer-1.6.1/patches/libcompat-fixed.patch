@@ -1,0 +1,17 @@
+Index: gstreamer-1.6.1/src/libs/gst/check/libcheck/libcompat.h
+===================================================================
+--- gstreamer-1.6.1.orig/src/libs/gst/check/libcheck/libcompat.h	2015-10-22 01:59:12.000000000 -0600
++++ gstreamer-1.6.1/src/libs/gst/check/libcheck/libcompat.h	2015-12-02 12:59:01.860322040 -0600
+@@ -100,9 +100,9 @@
+ #define strdup _strdup
+ #endif /* !HAVE_DECL_STRDUP && HAVE__STRDUP */
+ 
+-#if !HAVE_DECL_STRSIGNAL
+-CK_DLL_EXP const char *strsignal (int sig);
+-#endif /* !HAVE_DECL_STRSIGNAL */
++#if !HAVE_DECL_STRSIGNALG
++CK_DLL_EXP const char *strsignalg (int sig);
++#endif /* !HAVE_DECL_STRSIGNALG */
+ 
+ /*
+  * On systems where clock_gettime() is not available, or

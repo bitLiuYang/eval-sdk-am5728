@@ -1,0 +1,1 @@
+TARGET_REQUIRED="gstreamer-1.6.1 gst-plugins-base-1.6.1 libid3tag libmad"

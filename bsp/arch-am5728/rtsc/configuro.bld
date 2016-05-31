@@ -1,0 +1,29 @@
+/** =========================================================
+*   \file   dm8168x.bld
+*    
+*   \author Jose Lopez
+*
+*   \note   Copyright (c) 2014 by RidgeRun Embedded Solutions.
+*
+*   \date   02/25/2014 
+*   
+*   =========================================================
+*/
+
+var Build = xdc.useModule("xdc.bld.BuildEnvironment");
+var Pkg = xdc.useModule("xdc.bld.PackageContents");
+
+//REVISIT
+var GCArmv5T = xdc.useModule('gnu.targets.arm.GCArmv5T');
+
+/* GCArmv5T.rootDir = "/opt/codesourcery/arm-2009q1"; */ 
+
+GCArmv5T.LONGNAME = "bin/arm-none-linux-gnueabi-gcc";
+
+GCArmv5T.ccOpts.suffix += "-Wall -fno-strict-aliasing";
+
+GCArmv5T.lnkOpts.suffix = GCArmv5T.lnkOpts.suffix.replace("-lstdc++", "-lpthread -lrt -ldl");
+
+GCArmv5T.platform = "ti.platforms.evmTI816X";
+
+Build.targets.$add(GCArmv5T);

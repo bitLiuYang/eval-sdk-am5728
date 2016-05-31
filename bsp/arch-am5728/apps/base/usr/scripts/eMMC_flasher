@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "eMMC Flasher"
+echo ""
+echo ""
+echo "Flashing sdcard.img to eMMC ..."
+echo ""
+echo "After the eMMC flash is done, the board will shutdown."
+echo "Please remove the SDcard and turn on the board again"
+echo "to check if the board boots correctly from eMMC."
+echo ""
+dd if=/sdcard.img of=/dev/mmcblk1 bs=1M
+echo "eMMC image flashing is done!"
+echo "!!!! The board is going to shutdown !!!!"
+poweroff

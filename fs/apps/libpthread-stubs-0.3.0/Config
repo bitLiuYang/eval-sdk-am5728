@@ -1,0 +1,7 @@
+config FS_APPS_PTHREADSTUBS
+	bool "libpthread-stubs 0.3.0"
+	help 
+	Libpthread-stubs library. The libpthread-stubs package provides weak aliases 
+	for pthread functions not provided in libc or otherwise available by default. 
+	This is useful for libraries that rely on pthread stubs to use pthreads optionally. 
+	On Linux, all necessary pthread functions are available, so this package is simply a placeholder.

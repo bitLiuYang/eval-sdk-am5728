@@ -1,0 +1,7 @@
+config PROPRIETARY_TI_Processor-SDK_AM5728
+	bool "Texas Instruments Processor SDK for AM5728"
+	depends on BSP_ARCH_AM5728
+	default y
+	help
+	    Processor SDK contains all the necessary firmware to load modules.
+	    For example: DSP, IPU, VIP, VPE, etc.

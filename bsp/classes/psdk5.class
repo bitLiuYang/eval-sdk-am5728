@@ -1,0 +1,39 @@
+PSDKURL?=http://software-dl.ti.com/dsps/dsps_public_sw/psdk/
+PSDK_COPY_EXCLUSIONS_PATTERNS=bin board-support docs example-applications filesystem\
+.gdbinit linux-devkit Makefile setup.sh .tftproot targetNFS .targetfs
+
+include $(CLASSES)/common.defs
+include $(CLASSES)/psdk.defs
+
+ifeq ($(PSDK_PLATFORM),)
+ $(error ====== PSDK_PLATFORM variable isn't defined on RidgeRun's psdk makefile =====)
+endif
+
+build: psdk 
+
+real_clean: $(PSDK_TARGETS:=_clean) psdk_clean
+	$(V) if [ -f syslink_downloaded ] ; then \
+	    rm -Rf $(subst /packages,,$(SYSLINK_INSTALL_DIR)) ; \
+	    rm syslink_downloaded ; \
+	fi
+
+clean:
+	$(V)if [ -e $(FETCHER_EXTRACT_DIRECTORY_NAME) ] ; then \
+	  $(MAKE) real_clean ; \
+	fi
+
+distclean: clean psdk_distclean rrfetched_clean
+
+create_tar: psdk_create_tar
+
+install: targets_install rrsdk_install
+	$(V)cd $(FETCHER_EXTRACT_DIRECTORY_NAME) && \
+	cp -ap --parents $(PSDK_FS_TARBALL_PATTERNS) $(FSROOT) && \
+	cd ..
+
+targets_install: build
+	@# We re-run make since this time Rules.make exist, so we can pull his variables in
+	$(V)$(MAKE) $(PSDK_TARGETS:=_install)
+
+uninstall: $(PSDK_TARGETS:=_uninstall)
+

@@ -1,0 +1,98 @@
+#
+# Ridgerun BSP Configuration file for toolchain
+# all definitions on this subtree must prefix with TOOLCHAIN_
+#
+
+menu "Toolchain configurations"
+
+choice
+	prompt "Floating point support"
+
+config TOOLCHAIN_SOFTFP
+	bool "Software floating point"
+	help
+	     Allows the generation of code using hardware floating-point instructions,
+             but still uses the soft-float calling conventions.
+
+config TOOLCHAIN_HARDFP
+	bool "Hardware floating point"
+	help
+	     Allows generation of floating-point instructions and uses FPU-specific calling conventions.
+             AM5728evm uses Linaro toolchain 5.2-2015.11-2 version (HFP)
+endchoice
+
+choice
+	prompt "Toolchain path scope"
+
+config TOOLCHAIN_PATH_GLOBAL
+	bool "Toolchain binaries path global"
+	help
+	     Global path on the file system of the toolchain libraries. AM5728evm uses Linaro
+	     toolchain 5.2-2015.11-2 version (HFP)
+
+config TOOLCHAIN_PATH_PER_COMPONENT
+	bool "Path of the toolchain binaries, bootloader and kernel"
+	help
+	     Enter the path on the file system of the kernel toolchain, bootloader toolchain and
+	     the toolchain binaries
+
+endchoice
+
+config BOOTLOADER_TOOLCHAIN_PATH
+        string "Bootloader Toolchain binaries path"
+        default "/opt/linaro/gcc-linaro-5.2-2015.11-2-x86_64_arm-linux-gnueabihf"
+	depends on TOOLCHAIN_PATH_PER_COMPONENT
+        help
+             Path on the file system to bootloader toolchain. AM5728evm uses Linaro 
+             toolchain 5.2-2015.11-2 version (HFP)
+ 
+config KERNEL_TOOLCHAIN_PATH
+        string "Kernel Toolchain binaries path"
+        default "/opt/linaro/gcc-linaro-5.2-2015.11-2-x86_64_arm-linux-gnueabihf"
+	depends on TOOLCHAIN_PATH_PER_COMPONENT
+        help
+           Path on the file system to kernel toolchain. AM5728evm uses Linaro
+           toolchain 5.2-2015.11-2 version (HFP)
+
+config TOOLCHAIN_PATH_SOFTFP
+        string "Toolchain binaries path"
+        default "/opt/linaro/gcc-linaro-arm-linux-gnueabi-2012.03-20120326_linux"
+	depends on TOOLCHAIN_SOFTFP
+        help
+            Path on the file system of the toolchain binaries
+
+config TOOLCHAIN_PATH_HARDFP
+        string "Toolchain binaries path"
+        default "/opt/linaro/gcc-linaro-5.2-2015.11-2-x86_64_arm-linux-gnueabihf"
+        depends on TOOLCHAIN_HARDFP
+        help
+            Path on the file system of the toolchain binaries. AM5728evm uses Linaro
+            toolchain 5.2-2015.11-2 version (HFP)
+
+config TOOLCHAIN_NOARCH_FLAGS
+	string "Toolchain architecture independent flags"
+	default "-Wall -Os"
+	help
+	    Toolchain architecture independent flags
+
+source bsp/mach/ConfigToolchainLinaro
+
+config TOOLCHAIN_SIMULATOR_FLAGS
+	string "Flags to use when compiling code to simulate on host machine"
+	default "-Os -Wall"
+
+config TOOLCHAIN_DEPENDENY_ON_FUTEX
+	bool
+	default y
+	select FUTEX # This toolchain is NPTL, and requires futex support on the kernel
+
+config TOOLCHAIN_CCACHE
+	bool "Use ccache while compiling"
+	default y
+	help
+		Using ccache usually will make recompilations faster.
+		Project homepage:
+		http://ccache.samba.org/
+
+endmenu
+

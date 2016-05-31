@@ -1,0 +1,31 @@
+diff --git glib-2.35.7.orig/src/gio/gdbusauthmechanismsha1.c glib-2.35.7/src/gio/gdbusauthmechanismsha1.c
+index e4f75eb..ed80b34 100644
+--- glib-2.35.7.orig/src/gio/gdbusauthmechanismsha1.c
++++ glib-2.35.7/src/gio/gdbusauthmechanismsha1.c
+@@ -23,9 +23,9 @@
+ #include "config.h"
+ 
+ #include <string.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include <sys/types.h>
++#include <fcntl.h>
+ #ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+ #endif
+diff --git glib-2.35.7.orig/src/gio/gunixcredentialsmessage.c glib-2.35.7/src/gio/gunixcredentialsmessage.c
+index 075a08d..453c995 100644
+--- glib-2.35.7.orig/src/gio/gunixcredentialsmessage.c
++++ glib-2.35.7/src/gio/gunixcredentialsmessage.c
+@@ -47,10 +47,10 @@
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+-#include <fcntl.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <fcntl.h>
+ 
+ #include "gunixcredentialsmessage.h"
+ #include "gcredentials.h"

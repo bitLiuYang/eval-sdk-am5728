@@ -1,0 +1,13 @@
+Index: openh264-1.4.0/src/Makefile
+===================================================================
+--- openh264-1.4.0.orig/src/Makefile	2015-03-25 01:43:00.000000000 -0600
++++ openh264-1.4.0/src/Makefile	2016-03-17 09:24:07.681298905 -0600
+@@ -19,7 +19,7 @@
+ CFLAGS_DEBUG=-g
+ BUILDTYPE=Release
+ V=Yes
+-PREFIX=/usr/local
++PREFIX=/usr
+ SHARED=-shared
+ OBJ=o
+ DESTDIR=

@@ -1,0 +1,17 @@
+---
+ src/drivers/usb/host/xhci-omap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: u-boot-2015.07-2_am57xx_TI_sdk-02.00.01.07/src/drivers/usb/host/xhci-omap.c
+===================================================================
+--- u-boot-2015.07-2_am57xx_TI_sdk-02.00.01.07.orig/src/drivers/usb/host/xhci-omap.c
++++ u-boot-2015.07-2_am57xx_TI_sdk-02.00.01.07/src/drivers/usb/host/xhci-omap.c
+@@ -27,7 +27,7 @@
+ 
+ static struct omap_xhci omap;
+ 
+-inline int __board_usb_init(int index, enum usb_init_type init)
++__weak int __board_usb_init(int index, enum usb_init_type init)
+ {
+ 	return 0;
+ }

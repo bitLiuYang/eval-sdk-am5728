@@ -1,0 +1,39 @@
+#$L$
+# Copyright (C) 2014 Ridgerun (http://www.ridgerun.com). 
+#$L$
+
+BOOTARGS=$(shell cat $(IMAGEDIR)/cmdline)
+
+WORKDIR=$(IMAGEDIR)/openfd
+SD_ARGS += --work-dir $(WORKDIR)
+ifneq ($(CONFIG_FS_TARGET_SD),y)
+SD_ARGS += --kernel-file $(IMAGEDIR)/zImage \
+  --kernel-file-type zImage \
+  --kernel-devicetree $(IMAGEDIR)/$(CONFIG_BSP_MACH_INSTALLER_DTS_FILENAME).dtb \
+  --uboot-mlo-file $(IMAGEDIR)/MLO \
+  --uboot-file $(IMAGEDIR)/bootloader
+endif
+ifneq ($(CONFIG_FS_TARGET_NFSROOT),y)
+SD_ARGS += --rootfs $(FSROOT) \
+  --kernel-file $(IMAGEDIR)/zImage \
+  --kernel-file-type zImage \
+  --kernel-devicetree $(IMAGEDIR)/$(CONFIG_BSP_MACH_INSTALLER_DTS_FILENAME).dtb \
+  --uboot-mlo-file $(IMAGEDIR)/MLO \
+  --uboot-file $(IMAGEDIR)/bootloader
+endif
+
+ifeq ($(CONFIG_INSTALLER_SD_DEVICE_LOOPBACK),y)
+SD_MODE=sd-img
+SD_ARGS += --image $(IMAGEDIR)/sdcard.img \
+  --image-size-mb $(CONFIG_INSTALLER_SD_DEVICE_LOOPBACK_SIZE)
+else
+SD_MODE=sd
+SD_ARGS += --device $(CONFIG_INSTALLER_SD_DEVICE)
+endif
+
+callinstallersd:
+	$(V) mkdir -p $(WORKDIR)
+	$(V) $(INSTALLER_EXE) $(INSTALLER_ARGS) $(SD_MODE) $(SD_ARGS) --uboot-bootargs "$(BOOTARGS)"
+
+installfsonly: $(IMAGEDIR)/fsimage callinstallersd
+install: installmemorymap callinstallersd

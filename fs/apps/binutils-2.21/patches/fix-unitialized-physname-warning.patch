@@ -1,0 +1,29 @@
+Index: binutils-2.21/src/binutils/stabs.c
+===================================================================
+--- binutils-2.21.orig/src/binutils/stabs.c	2010-04-09 08:40:13.000000000 -0600
++++ binutils-2.21/src/binutils/stabs.c	2015-04-06 13:34:58.695210265 -0600
+@@ -2739,10 +2739,9 @@
+              argtypes string is the mangled form of the argument
+              types, and the full type and the physical name must be
+              extracted from them.  */
+-	  if (! stub)
+-	    physname = argtypes;
+-	  else
+-	    {
++	  physname = argtypes;
++	  if (stub)
++            {
+ 	      debug_type class_type, return_type;
+ 
+ 	      class_type = stab_find_type (dhandle, info, typenums);
+@@ -2851,9 +2850,7 @@
+ 		   || CONST_STRNEQ (argtypes, "__dt"));
+   is_v3 = argtypes[0] == '_' && argtypes[1] == 'Z';
+ 
+-  if (is_destructor || is_full_physname_constructor || is_v3)
+-    *pphysname = argtypes;
+-  else
++  if (!(is_destructor || is_full_physname_constructor || is_v3))
+     {
+       unsigned int len;
+       const char *const_prefix;

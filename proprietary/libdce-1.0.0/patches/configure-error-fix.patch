@@ -1,0 +1,22 @@
+Index: libdce-1.0.0/src/autogen.sh
+===================================================================
+--- libdce-1.0.0.orig/src/autogen.sh
++++ libdce-1.0.0/src/autogen.sh
+@@ -15,17 +15,4 @@
+ 
+ mkdir -p config && $aclocal && $libtoolize --copy --force && $automake --copy --add-missing --foreign && $autoconf
+ 
+-test -n "$NOCONFIGURE" && {
+-  echo "skipping configure stage as requested."
+-  echo "autogen.sh done."
+-  exit 0
+-}
+-
+-CONFIGURE_DEF_OPT="--enable-maintainer-mode"
+-echo ./configure $CONFIGURE_DEF_OPT $*
+-./configure $CONFIGURE_DEF_OPT $* || {
+-        echo "  configure failed"
+-        exit 1
+-}
+-
+ echo "Now type 'make' to compile"

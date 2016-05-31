@@ -1,0 +1,2 @@
+HOST_REQUIRED="libpopt-dev binutils-dev libiberty-dev"
+

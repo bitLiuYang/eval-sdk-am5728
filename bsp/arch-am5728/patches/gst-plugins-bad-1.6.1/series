@@ -1,0 +1,5 @@
+0001-Added-GstDRMBufferPool-support.patch
+0002-Modified-waylandsink-to-accept-NV12-format.patch
+0003-Added-KMSsink-support.patch
+0004-vc1parse-and-jpegparse-Fixes-plugin-ranks.patch
+0005-GstDRMBufferPool-support-fix.patch

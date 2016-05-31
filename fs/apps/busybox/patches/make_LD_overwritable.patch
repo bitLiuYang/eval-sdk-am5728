@@ -1,0 +1,13 @@
+Index: busybox/src/Makefile
+===================================================================
+--- busybox.orig/src/Makefile	2015-03-16 14:09:55.930282733 -0600
++++ busybox/src/Makefile	2015-03-16 14:10:13.846282600 -0600
+@@ -290,7 +290,7 @@
+ 
+ AS		= $(CROSS_COMPILE)as
+ CC		= $(CROSS_COMPILE)gcc
+-LD		= $(CC) -nostdlib
++LD		?= $(CC) -nostdlib
+ CPP		= $(CC) -E
+ AR		= $(CROSS_COMPILE)ar
+ NM		= $(CROSS_COMPILE)nm

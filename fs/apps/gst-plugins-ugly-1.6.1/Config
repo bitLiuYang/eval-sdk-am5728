@@ -1,0 +1,11 @@
+config FS_APPS_GSTREAMER_PLUGINS_UGLY_1_6
+	bool "gstreamer-plugins-ugly 1.6.1"
+        select FS_APPS_GSTREAMER_1_6
+        select FS_APPS_GLIB
+        select FS_APPS_LIBOIL
+        select FS_APPS_LIBXML2
+        select FS_APPS_GETTEXT
+	select FS_APPS_GSTREAMER_PLUGINS_BASE_1_6
+	help
+	This option enabled the ugly plugins for gstreamer that
+	doesn't have external dependencies on other libraries

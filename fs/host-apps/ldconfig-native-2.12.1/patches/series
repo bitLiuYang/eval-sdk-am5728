@@ -1,0 +1,6 @@
+32and64bit.patch
+endian-ness_handling.patch
+flag_fix.patch
+ldconfig_aux-cache_path_fix.patch 
+ldconfig.patch
+autotools.patch

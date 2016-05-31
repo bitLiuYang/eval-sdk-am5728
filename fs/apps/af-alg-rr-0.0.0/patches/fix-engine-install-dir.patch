@@ -1,0 +1,13 @@
+Index: af-alg-rr-0.0.0/src/configure.ac
+===================================================================
+--- af-alg-rr-0.0.0.orig/src/configure.ac	2015-04-01 16:43:37.273072718 -0600
++++ af-alg-rr-0.0.0/src/configure.ac	2015-04-01 16:46:46.385071323 -0600
+@@ -46,7 +46,7 @@
+ ])
+ 
+ # Set the plugindir where plugins should be installed (for src/Makefile.am)
+-  plugindir="\$(libdir)/openssl-1.0.0/engines"
++  plugindir="\$(libdir)/engines"
+ AC_SUBST(plugindir)
+ 
+ # Set proper LDFLAGS for plugins

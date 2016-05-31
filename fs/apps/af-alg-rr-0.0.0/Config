@@ -1,0 +1,9 @@
+config FS_APPS_AF_ALG_RR
+	bool "af-alg-rr-0.0.0"
+	select FS_APPS_OPENSSL
+        select CRYPTO_USER_API
+        select CRYPTO_USER_API_SKCIPHER
+        select CRYPTO_USER_API_HASH
+	default n
+	help
+	  This is RidgeRun's autotools version of the original af_alg project.

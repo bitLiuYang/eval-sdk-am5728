@@ -1,0 +1,11 @@
+config PROPRIETARY_TI_GST_PLUGINS_DUCATI
+	bool "GStreamer Ducati Plugins 1.0.0"
+	select FS_APPS_GSTREAMER_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_BAD_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_BASE_1_6
+	select PROPRIETARY_TI_LIBDCE
+	default y
+	help 
+	Gst-Ducati is a plugin for using the hw accellerated codecs on IVA-HD via the
+	codec-engine API.  Uses the libdce (distributed codec-engine) library to
+	use the codec on ducati.

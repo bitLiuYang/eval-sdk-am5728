@@ -1,0 +1,17 @@
+Index: libgcrypt-1.4.6/src/mpi/mpi-inline.h
+===================================================================
+--- libgcrypt-1.4.6.orig/src/mpi/mpi-inline.h
++++ libgcrypt-1.4.6/src/mpi/mpi-inline.h
+@@ -29,8 +29,12 @@
+ #define G10_MPI_INLINE_H
+ 
+ #ifndef G10_MPI_INLINE_DECL
++#ifdef __GNUC_STDC_INLINE__
++#define G10_MPI_INLINE_DECL  extern inline __attribute__ ((__gnu_inline__))
++#else
+ #define G10_MPI_INLINE_DECL  extern __inline__
+ #endif
++#endif
+ 
+ G10_MPI_INLINE_DECL  mpi_limb_t
+ _gcry_mpih_add_1( mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,

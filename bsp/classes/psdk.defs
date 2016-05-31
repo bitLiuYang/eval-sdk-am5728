@@ -1,0 +1,297 @@
+#
+# Makefile rules to dealing with typical psdk logic
+#
+
+#! \defgroup psdk_defs PSDK Class
+#! \ingroup classes
+#! \section intro Introduction
+#! The PSDK definitions file provides logic dealing with typical psdk logic.
+#!
+#! \section public_params Public Parameters
+#! The following is a list of parameters that may be set according to an application's specific requirements.
+#! <ul>
+#! <li>
+#! <b>FORCE_PSDK_COPY:</b> set to yes if you want to force the SDK into copying the PSDK inside the RidgeRun SDK.
+#! This is useful if you are sharing your PSDK between multiple development environments. Defaults to no.
+#!
+#! <li>
+#! <b>PSDK_COPY_EXCLUSIONS_PATTERNS:</b> This are the files that should not be copied from the PSDK to save disk space.
+#! This variable is usually defined by the PSDK class file for the specific files on the PSDK version. Only relevant
+#! if FORCE_PSDK_COPY=yes
+#!
+#! <li>
+#! <b>PSDKURL:</b> URL from which the user can obtain a copy of the required PSDK.
+#!
+#! <li>
+#! <b>RULES_MAKE:</b> Location of the Rules.make file within the psdk directory for integrity checking.
+#!
+#! <li>
+#! <b>PSDK_SEARCH_PATH:</b> List of paths in which to look for a valid PSDK within the host machine.
+#!
+#! <li>
+#! <b>PSDK_VERIFICATION_FILE:</b> File within the found psdk directory to check for its integrity.
+#!
+#! </ul>
+
+export BUILDING_FROM_RR_SDK=yes
+
+# Variables that control PSDK interaction
+ifeq ($(PSDK_NAME),)
+$(error ====== PSDK_NAME variable isn't defined on RidgeRun's psdk makefile =====)
+endif
+
+# Variable to define media controller utils path inside the PSDK #
+ifeq ($(PSDK_PLATFORM),am5728)
+PSDK_MEDIA_CONTROL_PLATFORM=am5728-evm
+endif
+
+#============================================================================================
+# Search for an existing PSDK tarball or create one from an existing PSDK installation
+#============================================================================================
+
+# Tar arguments
+PSDK_TAR_VERBOSE=$(if $(VERBOSE:1=),,--verbose)
+
+# Fetcher variables needed to be defined
+PKG_NAME=$(PSDK_NAME)
+FETCHER_EXTRACT_DIRECTORY_NAME=psdk
+
+# Variables that control PSDK interaction
+PSDKURL?=http://software-dl.ti.com/dsps/dsps_public_sw/psdk/
+RULES_MAKE?=$(FETCHER_EXTRACT_DIRECTORY_NAME)/Rules.make
+-include $(RULES_MAKE)
+
+# Variables that control PSDK search
+PSDK_SEARCH_PATH?=$(HOME)/$(PSDK_NAME) /usr/$(PSDK_NAME) /usr/local/$(PSDK_NAME)
+PSDK_VERIFICATION_FILE?=Rules.make
+
+PSDK_FSROOT=tisdk-rootfs-image-am57xx-evm.tar.gz
+
+PSDK_FS_TARBALL_PATTERNS=\
+./lib/firmware\
+
+# This variable is usually overwriten by the psdk class file with the respective values for the PSDK version
+PSDK_TARBALL_EXCLUSIONS_PATTERNS=\
+bin\
+board-support\
+docs\
+example-applications\
+filesystem\
+.gdbinit\
+linux-devkit\
+Makefile\
+setup.sh\
+.tftproot\
+targetNFS\
+.targetfs
+				 	 
+TARVERBOSE=$(if $(VERBOSE:1=),,v)
+
+# PSDK tarball name
+PSDK_TARBALL_NAME?=$(PKG_TARBALL)
+PSDK_TARBALL_SHA1_NAME?=$(PKG_TARBALL).sha1
+
+# Obtains info from the PSDK tarball:
+#
+#   PSDK_TARBALL_EXISTS
+#     - Set to 'yes' if the tarball exists. Otherwise
+#       'no'.
+#   PSDK_TARBALL_SHA1_EXISTS
+#     - Set to 'yes' if the tarball sha1sum exists. Otherwise
+#       'no'.
+#   PSDK_TARBALL_DIR
+#     - Set to the directory listed in DOWNLOADS,
+#       where the DVSDK tarball was found. Otherwise
+#       empty.
+#
+define psdk_tarball_info
+  PSDK_TARBALL_EXISTS=no ; \
+  PSDK_TARBALL_SHA1_EXISTS=no ; \
+  PSDK_TARBALL_DIR= ; \
+  for path in $(DOWNLOADS); do \
+    if [ -e $$path/$(PSDK_TARBALL_NAME) ] ; then \
+      PSDK_TARBALL_EXISTS=yes ; \
+      PSDK_TARBALL_DIR=$$path ; \
+      if [ -e $$path/$(PSDK_TARBALL_SHA1_NAME) ] ; then \
+        PSDK_TARBALL_SHA1_EXISTS=yes ; \
+      fi ; \
+      break ; \
+    fi ; \
+  done
+endef
+
+# Sets PSDK_TARBALL_TARGET_DIR to a directory listed in DOWNLOADS, where the
+# psdk tarball will be placed. If no appropriate directory was found,
+# PSDK_TARBALL_TARGET_DIR will be empty
+#
+define psdk_tarball_target_dir
+  PSDK_TARBALL_TARGET_DIR= ; \
+  for path in $(DOWNLOADS); do \
+    if [ -e $$path -a -w $$path ] ; then \
+      PSDK_TARBALL_TARGET_DIR=$$path ; \
+      break ; \
+    fi ; \
+  done
+endef
+
+# Extract the files selected into PSDK_FS_TARBALL_PATTERNS to include
+# on filesystem
+define psdk_untar_fs
+    tar $(PSDK_TAR_VERBOSE) \
+	--no-same-permissions\
+	--atime-preserve\
+	--absolute-name\
+	--extract\
+	--file=$(1)/filesystem/$(PSDK_FSROOT)\
+	--directory=$(1)\
+	$(PSDK_FS_TARBALL_PATTERNS)
+endef
+
+# Remove all files extracted according to PSDK_FS_TARBALL_PATTERNS 
+define remove_untar_files
+    $(V)rm  --force \
+        --recursive\
+	$(1)/`echo $(2) | cut -f 2 -d '/'` ;\                       
+endef
+
+# Creates a tarball with only a subset of the PSDK directories, according
+# to the exclude patterns specified in PSDK_TARBALL_EXCLUSION_PATTERNS.
+#
+# The output is a gzip compressed file, which name is defined by
+# $(PSDK_TARBALL_NAME).
+#
+# Parameters:
+#   $(1): Absolute path to where the PSDK is located
+#   $(2): Absolute path where to put the PSDK tarball
+#
+define psdk_tarball_create
+  cd $(1) && \
+  tar $(PSDK_TAR_VERBOSE) \
+      --no-same-permissions \
+      --atime-preserve \
+      --null \
+      --absolute-names \
+      --exclude-vcs \
+      --exclude=.svn \
+      --exclude=.git \
+      --exclude=\*~ \
+      $(foreach exclusion,$(PSDK_TARBALL_EXCLUSIONS_PATTERNS),--exclude=$(PSDK_NAME)/$(exclusion)) \
+      --create \
+      --gzip \
+      --file=$(2)/$(PSDK_TARBALL_NAME) \
+      ../$(PSDK_NAME)  \
+  || \
+      { \
+        $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) while creating $(2)/$(PSDK_TARBALL_NAME)" ; \
+        rm -f $(2)/$(PSDK_TARBALL_NAME) ; \
+        exit -1 ; \
+      } 
+endef
+
+# Tars the psdk source code
+#
+define psdk_tar
+  PSDK_FOUND_INSTALLATION_DIR=no ; \
+  for PATH2TEST in $(PSDK_SEARCH_PATH); do \
+     if [ ! -w $$PATH2TEST ] ; then \
+        $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) Found a psdk on $$PATH2TEST, but can't write into it" ; \
+        $(ECHO) "Please grant write permissions to the psdk directory to continue.\n" ; \
+        exit -1 ; \
+     fi ; \
+     \
+     if [ -f $$PATH2TEST/rrsdk_path ] ; then \
+         $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) Found a psdk on $$PATH2TEST, but is currently on use by another RidgeRun SDK at path:" ; \
+         $(ECHO) "  `cat $$PATH2TEST/rrsdk_path`\n" ; \
+         exit -1 ; \
+     fi ; \
+     \
+     $(ECHO) "Found PSDK at $$PATH2TEST" ; \
+     PSDK_FOUND_INSTALLATION_DIR=yes ; \
+     echo "$(PSDK_FOUND_INSTALLATION_DIR)" ; \
+     \
+     $(call psdk_tarball_target_dir) ; \
+     \
+     if [ -z $$PSDK_TARBALL_TARGET_DIR ] ; then \
+        $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) Unable to find a folder suitable to put the PSDK tarball:" ; \
+         for PATH2DOWNLOADS in $(DOWNLOADS); do \
+           $(ECHO) "  * $$PATH2DOWNLOADS" ; \
+         done ; \
+         $(ECHO) "\nPlease create and grant write permissions to one of the previous paths.\n" ; \
+         exit -1 ; \
+     fi ; \
+     \
+     if [ ! -n $$PATH2TEST/filesystem/$(PSDK_FSROOT) ] ; then \
+	 $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) The $(PSDK_FSROOT) not found on $$PATH2TEST/filesystem/$(PSDK_FSROOT)" ; \
+	 exit -1 ; \
+     fi ; \
+     \
+     $(call psdk_untar_fs,$$PATH2TEST,$$PSDK_TARBALL_TARGET_DIR) ; \
+     \
+     $(ECHO) "Creating PSDK tarball at $$PSDK_TARBALL_TARGET_DIR/$(PSDK_TARBALL_NAME)" ; \
+     pushd . > /dev/null ; \
+     $(call psdk_tarball_create,$$PATH2TEST,$$PSDK_TARBALL_TARGET_DIR) ; \
+     popd  > /dev/null ; \
+     \
+     for PATHREMOVE in $(PSDK_FS_TARBALL_PATTERNS); do \
+	 $(call remove_untar_files,$$PATH2TEST,$$PATHREMOVE) ; \
+     done ; \
+     \
+     $(ECHO) "Generating PSDK tarball sha1sum $$PSDK_TARBALL_TARGET_DIR/$(PSDK_TARBALL_SHA1_NAME)" ; \
+     sha1sum $$PSDK_TARBALL_TARGET_DIR/$(PSDK_TARBALL_NAME) > $$PSDK_TARBALL_TARGET_DIR/$(PSDK_TARBALL_SHA1_NAME) ; \
+     break ; \
+  done ; \
+  \
+  if [ "$$PSDK_FOUND_INSTALLATION_DIR" = "no" ] ; then \
+    $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) PSDK $(PSDK_NAME) wasn't found on the following search paths:" ; \
+    for PATH2TEST in $(PSDK_SEARCH_PATH); do \
+      $(ECHO) "* $$PATH2TEST" ; \
+    done ; \
+    $(ECHO) "\nThe PSDK should be installed in one of the previous paths.\nYou can download the PSDK from the following URL:" ; \
+    $(ECHO) " $(GREEN)$(PSDKURL)$(NORMAL_COLOR)\n" ; \
+    exit -1 ; \
+  fi 
+endef
+
+# Logic to obtain the psdk source code
+#
+psdk: psdk_fetch
+
+psdk_fetch:
+	$(V) $(call psdk_tarball_info) ; \
+	if [ "$$PSDK_TARBALL_EXISTS" = "yes" ] ; then \
+	  if [ "$$PSDK_TARBALL_SHA1_EXISTS" = "no" ] ; then \
+	    $(ECHO) "$(ERROR_COLOR)Error:$(NORMAL_COLOR) missing required sha1sum file: $$PSDK_TARBALL_DIR/$(PSDK_TARBALL_SHA1_NAME)" ; \
+	    exit -1 ; \
+	  fi ; \
+	elif [ -z "$(PKG_URL)" ] && [ -z "$(PKG_INTERNAL_URL)"] ; then \
+	    $(call psdk_tar) ; \
+	fi ; \
+	\
+	$(MAKE) rrfetched
+
+rrconfig: custom_rules_make rrpatched
+
+custom_rules_make:
+	$(V) if ! [ -L $(RULES_MAKE) ] ; then \
+	    chmod -R +w psdk ; \
+	    mv $(RULES_MAKE) $(RULES_MAKE).orig ; \
+	    ln -s $(shell pwd)/patches/arch/Rules.make.custom $(RULES_MAKE) ; \
+	fi
+
+psdk_clean: remove_custom_rules_make unpatch
+
+remove_custom_rules_make:
+	$(V) if [ -L $(RULES_MAKE) ] ; then \
+	    mv $(RULES_MAKE).orig $(RULES_MAKE) ; \
+	fi
+
+psdk_distclean: rrfetched_clean
+	@#We should not clean if we are going to erase the files anyway, unlike when we are sharing the dir
+	$(V) if [ -L $(FETCHER_EXTRACT_DIRECTORY_NAME) ] ; then \
+	    $(MAKE) psdk_clean ; \
+	fi
+
+psdk_create_tar:
+	$(V) $(call psdk_tar)
+
+include $(CLASSES)/fetcher.defs

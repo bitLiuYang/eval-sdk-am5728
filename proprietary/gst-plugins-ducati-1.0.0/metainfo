@@ -1,0 +1,2 @@
+TARGET_REQUIRED="libdce"
+HOST_REQUIRED="gettext"

@@ -1,0 +1,109 @@
+/*
+ *  ======== config.bld ========
+ *  This script is run prior to all build scripts.  It initializes the
+ *  rootDir configuration parameter of all supported targets.
+ *
+ *  There are more details about config.bld here:
+ *  http://rtsc.eclipse.org/docs-tip/Glossary#config.bld
+ */
+
+var Build = xdc.useModule("xdc.bld.BuildEnvironment");
+var Pkg = xdc.useModule("xdc.bld.PackageContents");
+var C674_rootdir;
+
+/* initialize local vars with those set in rules.mak (via XDCARGS) */
+for (x = 0; x < arguments.length; x++) {
+    if (arguments[x].match(/^CGTOOLS_C674=/)) {
+        C674_rootdir = arguments[x].split("=")[1];
+    }
+}
+
+print(C674_rootdir);
+print("arguments="+arguments);
+
+/* should test here that cgRootDir is set! */
+var targ = xdc.useModule("ti.targets.elf.C674");
+targ.rootDir = C674_rootdir;
+
+/* ************************************************ */
+
+targ.platforms = [
+    "ti.platforms.evmTI816X"
+];
+
+/* $trace("Adding ti.targets.elf.C674 to Build.targets", 1, ['genserver']); */
+/* ************************************************ */
+
+Build.targets.$add(targ);
+
+/* We remove a few profiles, just to cut down on build time */
+delete targ.profiles["coverage"];
+delete targ.profiles["profile"];
+delete targ.profiles["whole_program"];
+delete targ.profiles["whole_program_debug"];
+
+
+/* Create a .zip file for redistribution.  Remove this line if you prefer .tar */
+/* Pkg.attrs.archiver = 'zip'; */
+
+
+/* ************************************************ */
+
+var mem_ext = [
+["DDR3_HOST", {
+    comment:    "DDR3 Memory reserved for use by the A8",
+    name:       "DDR3_HOST",
+    base:       0x80000000,
+    len:        0x0B000000,
+    }
+],
+["DDR3", {
+    comment:    "DDR3 Memory reserved for use by the C674",
+    name:       "DDR3",
+    base:       0x9FC00000, /*<< LINUX2 TEST 0x99500000, */
+    len:        0x02800000 /* <<40MB TEST  0x01400000<< 20 MB TEST 0x00C00000, */
+    }
+],
+["DDRALGHEAP", {
+    comment:    "DDRALGHEAP: off-chip memory for dynamic allocation",
+    name:       "DDRALGHEAP",
+    base:       0x98000000,
+    len:        0x01400000,
+    }
+],
+["DDR3_SR1", {
+    comment:    "DDR3 Memory reserved for use by SharedRegion 1",
+    name:       "DDR3_SR1",
+    base:       0x9A100000,
+    len:        0x00100000,
+    }
+],
+["DDR3_SR0", {
+    comment: "DDR3 Memory reserved for use by SharedRegion 0",
+    name: "DDR3_SR0",
+    base: 0x9F700000,
+    len:  0x00200000    /* 2 MB */
+    }
+],
+
+["LOGGERSM", {
+    comment: "UIA Shared Memory for Logger",
+    name: "LOGGERSM",
+    base: 0xA4C00000, /* LINUX2MEM + 80MB offset */
+    len:  0x00020000 //_MB
+    }
+],
+];
+
+/* platform instances used by this package */
+Build.platformTable["ti.platforms.evmTI816X"] = {
+    externalMemoryMap: mem_ext,
+    l1DMode:"32k",
+    l1PMode:"32k",
+    l2Mode:"128k",            
+    codeMemory: "DDR3",
+    dataMemory: "DDR3",
+    stackMemory: "DDR3"
+};
+
+/* ************************************************ */

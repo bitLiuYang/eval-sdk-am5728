@@ -1,0 +1,21 @@
+#
+# Ridgerun BSP Configuration file for Centaurus board
+#
+
+config BSP_NET_HAS_ETH0
+	bool
+	select BSP_NET_HAS_NET
+	default y
+
+config KERNEL_GENERATE_DEVICE_TREE_BLOB
+	bool "Generate device tree blob"	
+	default y
+	help
+		Will invoke make for dtb generation
+
+config BSP_MACH_INSTALLER_DTS_FILENAME
+	depends on KERNEL_GENERATE_DEVICE_TREE_BLOB
+	string "DTS Filename"
+	default "am57xx-beagle-x15"
+	help 
+		Used to compile device tree blob

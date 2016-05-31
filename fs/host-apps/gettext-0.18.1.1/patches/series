@@ -1,0 +1,2 @@
+#fix-stdio.patch
+0001-check-if-gets-is-defined-before-undefining-it.patch

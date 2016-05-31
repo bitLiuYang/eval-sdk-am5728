@@ -1,0 +1,11 @@
+config UBOOT_USE_MLO
+	bool
+	default y
+
+config UBOOT_FW_PRINTENV
+	bool "Enable fw_printenv tool"
+	depends on BSP_ARCH_AM5728
+	default n
+	help
+	    If this option is enabled, fw_printenv and fw_setenv commands
+	    can be used to read and set U-Boot environment variables from Linux

@@ -1,0 +1,12 @@
+Index: af-alg-rr-0.0.0/src/configure.ac
+===================================================================
+--- af-alg-rr-0.0.0.orig/src/configure.ac	2015-03-30 18:45:53.000000000 -0600
++++ af-alg-rr-0.0.0/src/configure.ac	2015-04-01 16:42:29.893073215 -0600
+@@ -13,7 +13,6 @@
+ AC_PROG_CC
+ AC_PROG_INSTALL
+ AC_PROG_MAKE_SET
+-AM_PROG_AR
+ LT_PREREQ([2.2.6])
+ LT_INIT
+ 

@@ -1,0 +1,5 @@
+config USER_APPS_CMAKE_TUTORIAL
+	bool "official cmake tutorial"
+	default n
+	help
+	    Official cmake tutorial example as RR package.

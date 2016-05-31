@@ -1,0 +1,5 @@
+config USER_APPS_NEON_MEMCPY
+	bool "Neon Memory Copy"
+	default n
+	help
+	    NEON memory copy offers a better performance in comparison with C library memory copy function.

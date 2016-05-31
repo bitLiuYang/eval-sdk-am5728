@@ -1,0 +1,73 @@
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/init/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/init/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/init/Kconfig	2016-02-10 09:03:46.626288284 -0600
+@@ -1585,7 +1585,6 @@
+ 
+ config EMBEDDED
+ 	bool "Embedded system"
+-	option allnoconfig_y
+ 	select EXPERT
+ 	help
+ 	  This option should be enabled if compiling the kernel for
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/misc/echo/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/misc/echo/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/misc/echo/Kconfig	2016-02-10 09:02:23.730287386 -0600
+@@ -1,5 +1,5 @@
+ config ECHO
+-	tristate "Line Echo Canceller support"
++	boolean "Line Echo Canceller support"
+ 	default n
+ 	---help---
+ 	  This driver provides line echo cancelling support for mISDN and
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/i2c/algos/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/i2c/algos/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/i2c/algos/Kconfig	2016-02-10 09:02:23.762287386 -0600
+@@ -3,7 +3,7 @@
+ #
+ 
+ menu "I2C Algorithms"
+-	visible if !I2C_HELPER_AUTO
++	depends on !I2C_HELPER_AUTO
+ 
+ config I2C_ALGOBIT
+ 	tristate "I2C bit-banging interfaces"
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/i2c/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/i2c/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/i2c/Kconfig	2016-02-10 09:02:23.774287386 -0600
+@@ -22,7 +22,7 @@
+ #
+ 
+ menu "Encoders, decoders, sensors and other helper chips"
+-	visible if !MEDIA_SUBDRV_AUTOSELECT
++	depends on !MEDIA_SUBDRV_AUTOSELECT
+ 
+ comment "Audio decoders, processors and mixers"
+ 
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/tuners/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/tuners/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/tuners/Kconfig	2016-02-10 09:02:23.774287386 -0600
+@@ -15,7 +15,7 @@
+ 	select MEDIA_TUNER_MC44S803 if MEDIA_SUBDRV_AUTOSELECT
+ 
+ menu "Customize TV tuners"
+-	visible if !MEDIA_SUBDRV_AUTOSELECT
++	depends on !MEDIA_SUBDRV_AUTOSELECT
+ 	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_RADIO_SUPPORT || MEDIA_SDR_SUPPORT
+ 
+ config MEDIA_TUNER_SIMPLE
+Index: kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/dvb-frontends/Kconfig
+===================================================================
+--- kernel.orig/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/dvb-frontends/Kconfig	2016-02-10 09:02:23.778287386 -0600
++++ kernel/linux-4.1.13_am57xx_TI_sdk-02.00.01.07/drivers/media/dvb-frontends/Kconfig	2016-02-10 09:02:23.774287386 -0600
+@@ -1,5 +1,5 @@
+ menu "Customise DVB Frontends"
+-	visible if !MEDIA_SUBDRV_AUTOSELECT
++	depends on !MEDIA_SUBDRV_AUTOSELECT
+ 
+ comment "Multistandard (satellite) frontends"
+ 	depends on DVB_CORE

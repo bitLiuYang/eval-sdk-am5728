@@ -1,0 +1,4 @@
+config FS_APPS_VPX
+	bool "libvpx-1.4.0"
+	help 
+	Library used by gst plugin for vp8/vp9 software codec

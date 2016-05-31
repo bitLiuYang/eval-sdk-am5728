@@ -1,0 +1,7 @@
+#
+# Architecture specific definitions taked from bspconfig
+#
+export ARCH=arm
+export SUBARCH=arm
+export KERNELVERSION
+

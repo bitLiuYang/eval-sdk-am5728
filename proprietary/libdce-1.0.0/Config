@@ -1,0 +1,9 @@
+config PROPRIETARY_TI_LIBDCE
+	bool "libdce 1.0.0"
+	select FS_APPS_LIBDRM
+	select PROPRIETARY_TI_IPC
+	help 
+	libdce library. 
+	DCE is a library to remotely invoke the hw accellerated codecs on IVA-HD 
+	via a syslink/rcm shim layer. This provides access to the codec interface 
+	on the coprocessor (ducati/M3) from the host.

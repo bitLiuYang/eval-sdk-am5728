@@ -1,0 +1,20 @@
+config FS_APPS_GSTREAMER_PLUGINS_BAD_1_6
+	bool "gstreamer-plugins-bad 1.6.1"
+	select FS_APPS_GSTREAMER_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_BASE_1_6
+	select FS_APPS_LIBGCRYPT
+	select FS_APPS_LIBEXIF
+	select FS_APPS_LIBOIL
+	select TOOLCHAIN_INSTALL_CPP_SUPPORT
+	help
+	This option enabled the bad plugins for gstreamer that
+	doesn't have external dependencies on other libraries
+
+config DUCATI_DEPENDENCIES
+	bool "enable Ducati Plugins dependencies"
+	default n
+	depends on FS_APPS_GSTREAMER_PLUGINS_BAD_1_6 && PROPRIETARY_TI_GST_PLUGINS_DUCATI
+	select FS_APPS_LIBDRM
+	select PROPRIETARY_TI_LIBDCE
+	help
+	Build dependencies needed by Gstreamer Ducati plugins.

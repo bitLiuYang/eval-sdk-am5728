@@ -1,0 +1,4 @@
+config FS_APPS_OPENH264
+	bool "openh264 1.4.0"
+	help
+	Openh264 is a library for H264 video encoding by software.

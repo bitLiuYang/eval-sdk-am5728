@@ -1,0 +1,86 @@
+Index: ldconfig-native-2.12.1/src/Makefile.am
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/Makefile.am	2015-06-30 09:13:02.430472205 -0600
+@@ -0,0 +1,13 @@
++bin_PROGRAMS = ldconfig
++
++AM_CFLAGS = -std=gnu99 -I.
++
++ldconfig_SOURCES = \
++	chroot_canon.c \
++	xmalloc.c \
++	xstrdup.c \
++	cache.c \
++	readlib.c \
++	dl-cache.c \
++	ldconfig.c
++
+Index: ldconfig-native-2.12.1/src/configure.ac
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/configure.ac	2015-06-30 09:13:18.846472269 -0600
+@@ -0,0 +1,36 @@
++#                                               -*- Autoconf -*-
++# Process this file with autoconf to produce a configure script.
++
++AC_PREREQ([2.68])
++AC_INIT([ldconfig], [2.12.1], [carsten.behling@ridgerun.com])
++AC_CONFIG_SRCDIR([readelflib.c])
++AC_CONFIG_HEADERS([config.h])
++AM_INIT_AUTOMAKE([-Wall -Werror gnu])
++
++# Checks for programs.
++AC_PROG_CC
++
++# Checks for libraries.
++
++# Checks for header files.
++AC_FUNC_ALLOCA
++AC_CHECK_HEADERS([inttypes.h libintl.h limits.h locale.h stddef.h stdint.h stdio_ext.h stdlib.h string.h sys/param.h unistd.h])
++
++# Checks for typedefs, structures, and compiler characteristics.
++AC_TYPE_INT32_T
++AC_TYPE_SIZE_T
++AC_TYPE_SSIZE_T
++AC_TYPE_UINT16_T
++AC_TYPE_UINT32_T
++AC_TYPE_UINT64_T
++AC_CHECK_TYPES([ptrdiff_t])
++
++# Checks for library functions.
++AC_FUNC_ERROR_AT_LINE
++AC_FUNC_MALLOC
++AC_FUNC_MMAP
++AC_FUNC_REALLOC
++AC_CHECK_FUNCS([memmove mempcpy memset mkdir munmap setlocale strchr strncasecmp strrchr strstr strtoul])
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+Index: ldconfig-native-2.12.1/src/AUTHORS
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/AUTHORS	2015-06-30 09:13:02.430472205 -0600
+@@ -0,0 +1,2 @@
++= AUTHORS =
++
+Index: ldconfig-native-2.12.1/src/ChangeLog
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/ChangeLog	2015-06-30 09:13:02.430472205 -0600
+@@ -0,0 +1,2 @@
++= ChangeLog =
++
+Index: ldconfig-native-2.12.1/src/NEWS
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/NEWS	2015-06-30 09:13:02.430472205 -0600
+@@ -0,0 +1,2 @@
++= NEWS =
++
+Index: ldconfig-native-2.12.1/src/README
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ldconfig-native-2.12.1/src/README	2015-06-30 09:13:02.430472205 -0600
+@@ -0,0 +1 @@
++Isolated ld-config from glibc

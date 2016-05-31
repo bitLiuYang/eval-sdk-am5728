@@ -1,0 +1,26 @@
+Index: gst-plugins-ducati-1.0.0/src/autogen.sh
+===================================================================
+--- gst-plugins-ducati-1.0.0.orig/src/autogen.sh
++++ gst-plugins-ducati-1.0.0/src/autogen.sh
+@@ -101,21 +101,10 @@
+   done
+ fi
+ 
+-test -n "$NOCONFIGURE" && {
+-  echo "+ skipping configure stage for package $package, as requested."
+-  echo "+ autogen.sh done."
+-  exit 0
+-}
+-
+ echo "+ running configure ... "
+ test ! -z "$CONFIGURE_DEF_OPT" && echo "  ./configure default flags: $CONFIGURE_DEF_OPT"
+ test ! -z "$CONFIGURE_EXT_OPT" && echo "  ./configure external flags: $CONFIGURE_EXT_OPT"
+ test ! -z "$CONFIGURE_FILE_OPT" && echo "  ./configure enable/disable flags: $CONFIGURE_FILE_OPT"
+ echo
+ 
+-./configure $CONFIGURE_DEF_OPT $CONFIGURE_EXT_OPT $CONFIGURE_FILE_OPT || {
+-        echo "  configure failed"
+-        exit 1
+-}
+-
+ echo "Now type 'make' to compile $package."

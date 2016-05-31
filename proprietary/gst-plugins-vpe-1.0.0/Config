@@ -1,0 +1,14 @@
+config PROPRIETARY_TI_GST_PLUGINS_VPE
+	bool "GStreamer VPE Plugins 1.0.0"
+	select FS_APPS_GSTREAMER_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_BASE_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_GOOD_1_6
+	select FS_APPS_GSTREAMER_PLUGINS_BAD_1_6
+	select PROPRIETARY_TI_LIBDCE
+	default y
+	help 
+	Gst-VPE is a GStreamer plugin for using the hw accellerated video
+	scaling, color-conversion and de-interlacing using the V4L2 M2M
+	driver for VPE video processing hardware accelerator on TI DRA7xx 
+	processors. This plugin currently supports NV12 format for input 
+	and output with de-interlacing and scaling processing.

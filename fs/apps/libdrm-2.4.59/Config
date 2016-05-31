@@ -1,0 +1,7 @@
+config FS_APPS_LIBDRM
+	bool "libdrm 2.4.59"
+	select FS_APPS_PTHREADSTUBS
+	help 
+	LIBDRM library. LIBDRM is the cross-driver middleware which allows user-space applications
+	(such as Mesa and 2D drivers) to communicate with the Kernel by the means of the DRI protocol.
+	It is a dependecy of gst-ducati plugins.

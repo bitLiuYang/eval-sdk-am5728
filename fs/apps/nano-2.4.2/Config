@@ -1,0 +1,5 @@
+config FS_APPS_NANO
+	bool "nano-2.4.2"
+	default y
+	help
+	GNU nano is a GPLed clone of the Pico text editor. It aims to emulate Pico as closely as possible, while possibly adding new features.

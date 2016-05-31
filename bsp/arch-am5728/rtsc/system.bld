@@ -1,0 +1,148 @@
+/** =========================================================
+*   \file   dm8168x.bld
+*    
+*   \author Jose Lopez
+*
+*   \note   Copyright (c) 2014 by RidgeRun Embedded Solutions.
+*
+*   \date   02/25/2014 
+*   
+*   =========================================================
+*/
+
+var Build = xdc.useModule("xdc.bld.BuildEnvironment");
+var Pkg = xdc.useModule("xdc.bld.PackageContents");
+
+var MemoryMap_DM8168 =
+[
+		["DDR3_HOST", {
+			comment:    "DDR3 Memory reserved for use by the A8",
+			name:       "DDR3_HOST",
+			base:       0x80000000,
+			len:        0x0B000000,
+			}
+		],
+		["DDR3", {
+			comment:    "DDR3 Memory reserved for use by the C674",
+			name:       "DDR3",
+			base:       0x9FC00000, /*<< LINUX2 TEST 0x99500000, */
+			len:        0x02800000 /* <<40MB TEST  0x01400000<< 20 MB TEST 0x00C00000, */
+			}
+		],
+		["DDRALGHEAP", {
+			comment:    "DDRALGHEAP: off-chip memory for dynamic allocation",
+			name:       "DDRALGHEAP",
+			base:       0x98000000,
+			len:        0x01400000,
+			}
+		],
+		["DDR3_SR1", {
+			comment:    "DDR3 Memory reserved for use by SharedRegion 1",
+			name:       "DDR3_SR1",
+			base:       0x9A100000,
+			len:        0x00100000,
+			}
+		],
+		["DDR3_SR0", {
+			comment: "DDR3 Memory reserved for use by SharedRegion 0",
+			name: "DDR3_SR0",
+			base: 0x9F700000,
+			len:  0x00200000    /* 2 MB */
+			}
+		],
+
+		["LOGGERSM", {
+			comment: "UIA Shared Memory for Logger",
+			name: "LOGGERSM",
+			base: 0xA4C00000, /* LINUX2MEM + 80MB offset */
+			len:  0x00020000 //_MB
+			}
+		],
+];
+
+ArgumentsHelp(arguments);
+ProcessTargets(arguments);
+
+
+function ArgumentsHelp(arguments)
+{
+	print("");
+	print("SDK RTSC build system");
+	print("Provide your arguments in the following format:");
+	print("XDCARG[a]:target,   e.g: ti.targets.elf.C674");
+	print("XDCARG[b]:compiler, e.g: path/cgt6x_7_3_4");
+	print("XDCARG[c]:platform, e.g: ti.platforms.evmTI816X");
+	print("");
+	
+	PrintArguments(arguments);
+}
+
+function PrintArguments(arguments)
+{
+	print("Number of provided SDK arguments: " + arguments.length);
+	
+	for (x = 0; x < arguments.length; x++)
+	{
+		print("XDCARG[" + x + "] = " + arguments[x]);   
+	}
+	
+	print("");
+}
+
+function ProcessTargets(arguments)
+{
+	for (x = 0; x < arguments.length; x++)
+	{
+		if (arguments[x].match("ti.targets.elf.C674"))
+		{
+			print("Found DSP target: " + arguments[x]);
+			
+			var DspTarget = xdc.useModule(arguments[x]);
+			
+			var TargetToolchainPath = arguments[x + 1];
+			
+			DspTarget.rootDir = TargetToolchainPath;
+			
+			print("Using toolchain path: " + DspTarget.rootDir);
+			
+			var DspPlatform = arguments[x + 2];
+			
+			DspTarget.platforms = [DspPlatform];
+			
+			print("Preparing target for platform: " + DspPlatform);
+			
+			delete DspTarget.profiles["whole_program"];
+			delete DspTarget.profiles["whole_program_debug"];
+
+			Build.targets.$add(DspTarget);
+			
+			ProcessPlatformTable(DspPlatform, MemoryMap_DM8168)
+
+		}
+		
+		/*
+		else if (arguments[x].match("rr.targets.your.arch"))
+		{
+			//Logic for new targets
+		}
+		*/
+	}
+	
+	print("");
+}
+
+//REVISIT
+function ProcessPlatformTable(platform, MemoryMap)
+{
+	Build.platformTable[platform] = {
+		externalMemoryMap: MemoryMap,
+		l1DMode:"32k",
+		l1PMode:"32k",
+		l2Mode:"128k",            
+		codeMemory: "DDR3",
+		dataMemory: "DDR3",
+		stackMemory: "DDR3"
+	};
+}
+
+

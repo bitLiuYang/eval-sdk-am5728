@@ -1,0 +1,13 @@
+Index: oprofile-0.9.6/src/libpp/format_output.h
+===================================================================
+--- oprofile-0.9.6.orig/src/libpp/format_output.h	2009-11-24 09:25:17.000000000 -0600
++++ oprofile-0.9.6/src/libpp/format_output.h	2015-07-07 15:31:48.948588168 -0600
+@@ -91,7 +91,7 @@
+ 		symbol_entry const & symbol;
+ 		sample_entry const & sample;
+ 		size_t pclass;
+-		mutable counts_t & counts;
++		counts_t & counts;
+ 		extra_images const & extra;
+ 		double diff;
+ 	};
